@@ -1,0 +1,99 @@
+AWSTemplateFormatVersion : '2010-09-09'
+Transform:
+  - AWS::Serverless-2016-10-31
+
+Description: My Lambda Resources
+Resources:
+
+  
+
+
+  GetUsers:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getUsers
+      Environment: 
+        Variables:
+         USERS_TABLE: !Ref MyUsersTable
+      Handler: users.getUsers
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref MyUsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/users/{userId}"
+            Method: GET
+          
+
+  PutUsers:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: putUsers
+      Environment: 
+        Variables:
+         USERS_TABLE: !Ref MyUsersTable
+      Handler: users.putUsers
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref MyUsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/users/{userId}"
+            Method: PUT
+      
+      
+  # MyTable:
+  #   Type: AWS::Serverless::SimpleTable
+  #   Properties:
+  #     TableName: my-user-app
+  #     PrimaryKey:
+  #       Name: pk
+  #       Type: String
+  #     ProvisionedThroughput:
+  #       ReadCapacityUnits: 5
+  #       WriteCapacityUnits: 5
+        
+
+  
+  
+
+  MyAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: another-gateway
+      StageName: prod
+      DefinitionBody:
+          Fn::Transform:
+            Name: AWS::Include
+            Parameters:
+              Location: swagger.yaml      
+  
+  
+  
+  MyUsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: table-nine
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      KeySchema:
+        - AttributeName: "pk"
+          KeyType: "HASH"
+        - AttributeName: "sk"
+          KeyType: "RANGE"
+      AttributeDefinitions:
+        - AttributeName: "pk"
+          AttributeType: "S"
+        - AttributeName: "sk"
+          AttributeType: "S"

@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform:
+- AWS::Serverless-2016-10-31
+Description: My Lambda Resources
+Resources:
+  GetUsers:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getUsers
+      Environment:
+        Variables:
+          USERS_TABLE:
+            Ref: MyUsersTable
+      Handler: users.getUsers
+      Runtime: python3.6
+      CodeUri: s3://origin-1234/68e6e023f3f71b3f3c02bc60a0ec62e7
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: MyUsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: MyAPI
+            Path: /users/{userId}
+            Method: GET
+  PutUsers:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: putUsers
+      Environment:
+        Variables:
+          USERS_TABLE:
+            Ref: MyUsersTable
+      Handler: users.putUsers
+      Runtime: python3.6
+      CodeUri: s3://origin-1234/68e6e023f3f71b3f3c02bc60a0ec62e7
+      Policies:
+      - DynamoDBWritePolicy:
+          TableName:
+            Ref: MyUsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: MyAPI
+            Path: /users/{userId}
+            Method: PUT
+  MyAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: my-api-gateway
+      StageName: prod
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: s3://origin-1234/5b2662b67aa3bb36138bb026f1fb9f76
+  MyUsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: my-users-app
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      KeySchema:
+      - AttributeName: pk
+        KeyType: HASH
+      - AttributeName: sk
+        KeyType: RANGE
+      AttributeDefinitions:
+      - AttributeName: pk
+        AttributeType: S
+      - AttributeName: sk
+        AttributeType: S

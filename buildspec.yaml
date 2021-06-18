@@ -12,7 +12,9 @@ phases:
       - echo pre-build
   build:
     commands:
-      - echo build
+      - echo ./deployment.sh -b
+      - echo ./deployment.sh -p
+      - echo ./deployment.sh -d
   post_build:
     commands:
       - echo post-build
