@@ -3,17 +3,17 @@ Transform:
 - AWS::Serverless-2016-10-31
 Description: My Lambda Resources
 Resources:
-  GetUsers:
+  GetUser:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: getUsers
+      FunctionName: getUser
       Environment:
         Variables:
           USERS_TABLE:
             Ref: MyUsersTable
-      Handler: users.getUsers
+      Handler: users.getUser
       Runtime: python3.6
-      CodeUri: s3://origin-1234/68e6e023f3f71b3f3c02bc60a0ec62e7
+      CodeUri: s3://origin-1234/44d45ea6d25bb34a320e1af53c6f3eac
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -26,17 +26,17 @@ Resources:
               Ref: MyAPI
             Path: /users/{userId}
             Method: GET
-  PutUsers:
+  PutUser:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: putUsers
+      FunctionName: putUser
       Environment:
         Variables:
           USERS_TABLE:
             Ref: MyUsersTable
-      Handler: users.putUsers
+      Handler: users.putUser
       Runtime: python3.6
-      CodeUri: s3://origin-1234/68e6e023f3f71b3f3c02bc60a0ec62e7
+      CodeUri: s3://origin-1234/44d45ea6d25bb34a320e1af53c6f3eac
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -52,17 +52,17 @@ Resources:
   MyAPI:
     Type: AWS::Serverless::Api
     Properties:
-      Name: my-api-gateway
+      Name: another-gateway
       StageName: prod
       DefinitionBody:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location: s3://origin-1234/5b2662b67aa3bb36138bb026f1fb9f76
+            Location: s3://origin-1234/323c27b205a02fb6924d49986f96a8b8
   MyUsersTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: my-users-app
+      TableName: table-nine
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5

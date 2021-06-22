@@ -8,14 +8,14 @@ Resources:
   
 
 
-  GetUsers:
+  GetUser:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: getUsers
+      FunctionName: getUser
       Environment: 
         Variables:
          USERS_TABLE: !Ref MyUsersTable
-      Handler: users.getUsers
+      Handler: users.getUser
       Runtime: python3.6
       CodeUri: package/
       Policies:
@@ -30,14 +30,14 @@ Resources:
             Method: GET
           
 
-  PutUsers:
+  PutUser:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: putUsers
+      FunctionName: putUser
       Environment: 
         Variables:
          USERS_TABLE: !Ref MyUsersTable
-      Handler: users.putUsers
+      Handler: users.putUser
       Runtime: python3.6
       CodeUri: package/
       Policies:
